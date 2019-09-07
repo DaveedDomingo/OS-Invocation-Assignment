@@ -45,12 +45,12 @@
 
 
 \section*{Introduction}
-The operating system is responsible for managing computer resources and ensures user applications use resources in a fair and secure manner. This means when applications want to use resources, they have to go through the operating system, more specifically the \textbf{kernel}. However when applications want to use resources such the CPU, memory, or I/O devices, the kernel must be scheduled to run and interrupt normal user program execution, to carry out the request or handle other various issues that come up when utilizing such resources. 
+The operating system is responsible for managing computer resources and ensures user applications use resources in a fair and secure manner. This means when applications want to use resources, they have to go through the operating system, more specifically the \textbf{kernel}. However when applications want to use resources such the CPU, memory, or I/O devices, the kernel must be scheduled to run and interrupt normal user program execution in order to carry out the request or handle other various issues that come up when utilizing such resources. 
 
-The goal of this assignment is to get an idea of potential kernel overhead by using system calls and signaling and measuring their average cost of invocation. Please read the entire assignment description before starting and make sure you follow the requirements.
+The goal of this assignment is to get an idea of potential overhead of invoking the kernel by using system calls and signaling and measuring their average cost of invocation. Please read the entire assignment description before starting and make sure you follow the requirements.
 
 \section{System Calls}
-User applications use system calls to request some service or resource from the operating system. When system calls are used, the kernel is invoked via a special trap, or software interrupt.  Some common system calls are the \textit{read()} and \textit{write()} which are used when reading a writing a file, the kernel needs to be involved as is has to ensure that the user application does in fact have permission to read and write that file. The system call \textit{getpid()} is another simple system call that requests from the the process id of the calling process. This sort of functionality is handled by the kernel as the kernel is responsible for managing processes and assigning their IDs.  \\\\
+User applications use system calls to request some service or resource from the operating system. When system calls are used, the kernel is invoked via a special trap, or software interrupt.  Some common system calls include \textit{read()} and \textit{write()} which are used when reading a writing a file. The kernel needs to be involved as is has to ensure that the user application has the proper permissions needed to read and write that file. The system call \textit{getpid()} is another simple system call that requests from the the process id of the calling process. This sort of functionality is handled by the kernel as the kernel is responsible for managing processes and assigning their IDs.  \\\\
 
  \begin{figure}[!htb]
         \center{\includegraphics[width=16cm]{figures/syscall}}
@@ -61,9 +61,9 @@ User applications use system calls to request some service or resource from the 
 \-\ \\ Given that system calls require the kernel to carry out the request before the user application can continue executing, it can incur significant overheads if we use system calls often. In this part of the assignment we will understand how system calls are used as well as understand how much time a system call can take.
  
 \subsection*{Implementation}
-In order to get an idea of how long a system call can take, we want to time it takes to perform a system call. For this assignment we'll try and time the simple and fast system call \textit{getpid()}. In order to get an accurate reading, you should run the system call many times (e.g. 100,000 times) and then calculate the average time it took for each system call. In order to time the program execution you should use the function \textit{timeofday()} to get the time before you start executing the system calls and the time after you stop executing the system calls to calculate the total time that passed to execute all the system calls. 
+In order to get an idea of how long a system call can take, we want to time how long it takes to perform a system call. For this assignment we'll try and time the simple and fast system call \textit{getpid()}. In order to get an accurate reading, you should run the system call many times (e.g. 100,000 times) and then calculate the average time it took for each system call. In order to time the program execution you should use the function \textit{timeofday()} to get the time before you start executing the system calls and the time after you stop executing the system calls so you can calculate the total time it took to execute all the system calls. 
 
-Supplied is should be a \textit{Makefile} and bare C program template called \textit{TimeSysCall.c}, Your job to is to complete the implementation in \textit{TimeSysCall.c}, running \textit{getpid()} 100,000 times and timing it and calculate the following statistics: (1) how many times the system call was used, (2) the total time it took to execute all the system calls, and (3) the average time it took per system call. The output of your program should be formatted exactly the same as in the example run shown later on in this section. 
+Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSysCall.c}, Your job to is to complete the implementation in \textit{TimeSysCall.c}, running \textit{getpid()} 100,000 times and timing it in order to calculate the following statistics: (1) how many times the system call was used, (2) the total time it took to execute all the system calls, and (3) the average time it took per system call. The output of your program should be formatted exactly the same as in the example run shown later on in this section. 
 
 \subsection*{Example Run}
 \begin{commandline}
@@ -103,11 +103,10 @@ Signaling is important aspect of Interprocess Communication (IPC). A signal is a
         \caption{Execution flow when and a signal handler is registered and a signal occurs}
 \end{figure}
 
-
-Given that signals often involve the kernel are interrupt normal user process execution, it can incur significant overheads if our user program is forced to handle many signals. In this part of the assignment we will understand how signals are handled as well as understand how much time handling a signal can incur. 
+Given that signals often involve the kernel and interrupt normal user process execution, it can incur significant overheads if our user program is forced to handle many signals. In this part of the assignment we will understand how signals are handled as well as understand how much time handling a signal can incur. 
 
 \subsection*{Implementation}
-In order to get an idea of how long a signal handling can take, we want to time it takes to incur a signal and handle it. For this assignment we'll try and invoke a signal by simply dividing by zero. When dividing by zero, an exception is delivered to the kernel, and the kernel will deliver a floating point exception signal, also known as \textbf{SIGFPE}, to the user program where the signal will be handled. In order to get an accurate reading, we want to incur the signal many times (e.g. 100,000 times) and then calculate the average time it took for each signal. However, this is an issue as typically the default action to handle of these types of signals such as SIGFPE are to terminate the user process. In order to incur a signal multiple times and time we can override the policy to terminate the user process by registering a signal handler for that particular signal. \\
+In order to get an idea of how long a signal handling can take, we want to measure the amount of time it takes to incur a signal and handle it. For this assignment we'll try and invoke a signal by simply dividing by zero. When dividing by zero, an exception is delivered to the kernel, and the kernel will deliver a floating point exception signal, also known as \textbf{SIGFPE}, to the user program where the signal will be handled. In order to get an accurate reading, we want to incur the signal many times (e.g. 100,000 times) and then calculate the average time it took for each signal. However, this is an issue as typically the default action to handle of these types of signals such as SIGFPE are to terminate the user process. In order to incur a signal multiple times and time it, we can override the policy to terminate the user process by registering our own signal handler for the SIGFPE signal. \\
 
 \noindent A handler for SIGFPE can be registered in the following manner:
 
@@ -132,7 +131,7 @@ void handle_sigfpe(int signum){
 Please note that if a signal handler function is allowed to return, the instruction that caused the signal will execute again, therefore causing the exception to occur again, ad infinitum. Your signal handler will need to detect when it has been invoked 100,000 times, then report the results and terminate the program. You can use a static variables for this purpose.
 \end{info}
 
-Supplied is should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{timeofday()} to time the execution like in the previous part of this assignment. The output of your program should be formatted exactly the same as in the example run shown later in this section.\\
+Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{timeofday()} to time the execution like in the previous part of this assignment. The output of your program should be formatted exactly the same as in the example run shown later in this section.\\
 
 
 \subsection*{Example Run}
@@ -167,13 +166,13 @@ Link:  \href{https://stackoverflow.com/questions/12645647/what-happens-in-os-whe
 When completing your assignment make sure to keep the following things in mind:
 \begin{itemize}
 \item \textbf{Make sure your programs can compile and run on the iLab machines}\\
-We will be grading your assignments on the ilab machines, so if your programs are unable to compile or run on the iLab machines, points will be deducted. No exceptions. 
-\item \textbf{Make sure you can compile you programs with make}\\
-We will be using the Makefile to compile your programs. If for some reason we can not compile your program with the makefile, points will be deducted. No exceptions. 
+We will be grading your assignments on the iLab machines, so if your programs are unable to compile or run on the iLab machines, points will be deducted. No exceptions. 
+\item \textbf{Make sure you can compile you programs with \textit{make}}\\
+We will be using the Makefile to compile your programs. If for some reason we can not compile your program with \textit{make}, points will be deducted. No exceptions. 
 \end{itemize}
 
 \section*{Submissions}
-To submit your assignment, simply submit at the very least the following files as is, directly to sakai as is. (\textbf{Do not compress the files}):
+To submit your assignment, simply submit the following files as is, directly to sakai as is. (\textbf{Do not compress the files}):
 \begin{enumerate}
 \item TimeSysCall.c
 \item TimeSignal.c
@@ -190,7 +189,7 @@ If you have an issue or your program is throwing an error that you don't know ho
 \begin{itemize}
 \item \textbf{Can I use helper functions in my implementations?} Yes, as long as the program works as intended and the output is correct. 
 \item \textbf{Can I use other *.c or *.h files in my implementation?} For the most part you shouldn't have to separate functionality into other files, but as long as the main files \textit{TimeSysCall.c}, \textit{TimeSignal.c}, and \textit{Makefile} remain intact and as long as we will use the makefile to compile your programs before running.
-\item \textbf{Can I modify the makefile?} Yes as long as we can make your programs via 'make TimeSysCall' and 'make TimeSignal' 
+\item \textbf{Can I modify the makefile?} Yes as long as we can compile your programs via 'make TimeSysCall' and 'make TimeSignal' 
 \item \textbf{Can we implement the programs on my own computer?} Yes as long as it can compile and run on the iLab machines as that is where they will be compiled, ran, and graded. 
 \end{itemize}
 
