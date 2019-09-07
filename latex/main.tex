@@ -100,7 +100,7 @@ Signaling is important aspect of Interprocess Communication (IPC). A signal is a
  \begin{figure}[!htb]
         \center{\includegraphics[width=16cm]{figures/signal}}
         \captionsetup{justification=centering}
-        \caption{Execution flow when and a signal handler is registered and a signal occurs}
+        \caption{Execution flow when a signal handler is registered and a signal occurs}
 \end{figure}
 
 Given that signals often involve the kernel and interrupt normal user process execution, it can incur significant overheads if our user program is forced to handle many signals. In this part of the assignment we will understand how signals are handled as well as understand how much time handling a signal can incur. 
