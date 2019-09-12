@@ -61,7 +61,7 @@ User applications use system calls to request some service or resource from the 
 \-\ \\ Given that system calls require the kernel to carry out the request before the user application can continue executing, it can incur significant overheads if we use system calls often. In this part of the assignment we will understand how system calls are used as well as understand how much time a system call can take.
  
 \subsection*{Implementation}
-In order to get an idea of how long a system call can take, we want to time how long it takes to perform a system call. For this assignment we'll try and time the simple and fast system call \textit{getpid()}. In order to get an accurate reading, you should run the system call many times (e.g. 100,000 times) and then calculate the average time it took for each system call. In order to time the program execution you should use the function \textit{timeofday()} to get the time before you start executing the system calls and the time after you stop executing the system calls so you can calculate the total time it took to execute all the system calls. 
+In order to get an idea of how long a system call can take, we want to time how long it takes to perform a system call. For this assignment we'll try and time the simple and fast system call \textit{getpid()}. In order to get an accurate reading, you should run the system call many times (e.g. 100,000 times) and then calculate the average time it took for each system call. In order to time the program execution you should use the function \textit{gettimeofday()} to get the time before you start executing the system calls and the time after you stop executing the system calls so you can calculate the total time it took to execute all the system calls. 
 
 Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSysCall.c}, Your job to is to complete the implementation in \textit{TimeSysCall.c}, running \textit{getpid()} 100,000 times and timing it in order to calculate the following statistics: (1) how many times the system call was used, (2) the total time it took to execute all the system calls, and (3) the average time it took per system call. The output of your program should be formatted exactly the same as in the example run shown later on in this section \textbf{and show the time as microseconds}.
 
@@ -89,7 +89,7 @@ Link:  \href{https://en.wikipedia.org/wiki/System_call}{https://en.wikipedia.org
 Link:  \href{http://man7.org/linux/man-pages/man2/getpid.2.html}{http://man7.org/linux/man-pages/man2/getpid.2.html}
 \item \textbf{How to use getpid()}\\
 Link:  \href{https://www.geeksforgeeks.org/getppid-getpid-linux}{https://www.geeksforgeeks.org/getppid-getpid-linux}
-\item \textbf{How to use time functions using timeofday() (\textit{Look at method \#3})}\\
+\item \textbf{How to use time functions using gettimeofday() (\textit{Look at method \#3})}\\
 Link: \href{https://www.techiedelight.com/find-execution-time-c-program/}{https://www.techiedelight.com/find-execution-time-c-program/}
 \end{itemize}
 
@@ -131,7 +131,7 @@ void handle_sigfpe(int signum){
 Please note that if a signal handler function is allowed to return, the instruction that caused the signal will execute again, therefore causing the exception to occur again, ad infinitum. Your signal handler will need to detect when it has been invoked 100,000 times, then report the results and terminate the program. You can use a static variables for this purpose.
 \end{info}
 
-Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{timeofday()} to time the execution like in the previous part of this assignment. The output of your program should be formatted exactly the same as in the example run shown later in this section \textbf{and show the time as microseconds}\\
+Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{gettimeofday()} to time the execution like in the previous part of this assignment. The output of your program should be formatted exactly the same as in the example run shown later in this section \textbf{and show the time as microseconds}\\
 
 
 \subsection*{Example Run}
