@@ -65,6 +65,10 @@ In order to get an idea of how long a system call can take, we want to time how 
 
 Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSysCall.c}, Your job to is to complete the implementation in \textit{TimeSysCall.c}, running \textit{getpid()} 100,000 times and timing it in order to calculate the following statistics: (1) how many times the system call was used, (2) the total time it took to execute all the system calls, and (3) the average time it took per system call. The output of your program should be formatted exactly the same as in the example run shown later on in this section \textbf{and show the time as microseconds}.
 
+\begin{info}[Note: Use floating point arithmetic during calculations:]
+The \textit{getpid()} system call will execute very fast (in order of fractions of a microsecond) since it's simply fetching the process id number from the kernel. When calculating the average time per sys-call, ensure to use floating point arithmetic (double or float) in order to correctly calculate the average time per system call.
+\end{info}
+
 \subsection*{Example Run}
 \begin{commandline}
 	\begin{verbatim}
@@ -74,8 +78,8 @@ $ make TimeSysCall                      # Compile using make
 gcc -Wall TimeSysCall.c -o TimeSysCall
 $ ./TimeSysCall                         # Run the program
 Syscalls Performed: XXXX
-Total Elapsed Time: XXXX ms
-Average Time Per Syscall: XXXXX ms
+Total Elapsed Time: XXXX microseconds
+Average Time Per Syscall: XXXXX microseconds
 	\end{verbatim}
 \end{commandline}
 
@@ -128,11 +132,14 @@ void handle_sigfpe(int signum){
 \end{verbatim}
 
 \begin{info}[Note on Signal Handling:]
-Please note that if a signal handler function is allowed to return, the instruction that caused the signal will execute again, therefore causing the exception to occur again, ad infinitum. Your signal handler will need to detect when it has been invoked 100,000 times, then report the results and terminate the program. You can use a static variables for this purpose.
+Please note that if a signal handler function is allowed to return, the instruction that caused the signal will execute again, therefore causing the exception to occur again, ad infinitum. Your signal handler will need to detect when it has been invoked 100,000 times, then report the results and terminate the program. You can use a static variable for this purpose.
 \end{info}
 
 Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{gettimeofday()} to time the execution like in the previous part of this assignment. The output of your program should be formatted exactly the same as in the example run shown later in this section \textbf{and show the time as microseconds}\\
 
+\begin{info}[Note: Measurement Precision]
+Like with measuring system call times in the previous section, you should use floating point arithmetic to show sub-microsecond precision. The average time to handle a signal should be a few microseconds.
+\end{info}
 
 \subsection*{Example Run}
 \begin{commandline}
@@ -143,8 +150,8 @@ $ make TimeSignal                      # Compile using make
 gcc -Wall TimeSignal.c -o TimeSignal
 $ ./TimeSignal                         # Run the program
 Exceptions Occurred: XXXX
-Total Elapsed Time: XXXX ms
-Average Time Per Exception: XXXXX ms
+Total Elapsed Time: XXXX microseconds
+Average Time Per Exception: XXXXX microseconds
 \end{verbatim}
 \end{commandline}
 
