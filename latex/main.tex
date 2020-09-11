@@ -63,7 +63,7 @@ User applications use system calls to request some service or resource from the 
 \subsection*{Implementation}
 In order to get an idea of how long a system call can take, we want to time how long it takes to perform a system call. For this assignment we'll try and time the simple and fast system call \textit{getpid()}. In order to get an accurate reading, you should run the system call many times (e.g. 100,000 times) and then calculate the average time it took for each system call. In order to time the program execution you should use the function \textit{gettimeofday()} to get the time before you start executing the system calls and the time after you stop executing the system calls so you can calculate the total time it took to execute all the system calls. 
 
-Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSysCall.c}, Your job to is to complete the implementation in \textit{TimeSysCall.c}, running \textit{getpid()} 100,000 times and timing it in order to calculate the following statistics: (1) how many times the system call was used, (2) the total time it took to execute all the system calls, and (3) the average time it took per system call. The output of your program should be formatted exactly the same as in the example run shown later on in this section \textbf{and show the time as microseconds}.
+Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSysCall.c}, Your job to is to complete the implementation in \textit{TimeSysCall.c}, running \textit{getpid()} 100,000 times and timing it in order to calculate the following statistics: (1) how many times the system call was used, (2) the total time it took to execute all the system calls, and (3) the average time it took per system call. \textbf{The output of your program should be formatted exactly the same as in the example run} shown later on in this section \textbf{and show the time as microseconds}.
 
 \begin{info}[Note: Use floating point arithmetic during calculations.]
 The \textit{getpid()} system call will execute very fast (in order of fractions of a microsecond) since it's simply fetching the process id number from the kernel. When calculating the average time per system call, ensure to use floating point arithmetic (double or float) in order to correctly calculate the average time per system call.
@@ -73,7 +73,7 @@ The \textit{getpid()} system call will execute very fast (in order of fractions 
 \begin{commandline}
 	\begin{verbatim}
 $ make clean                            # Remove any old executable made
-rm -f TimeSysCall TimeSignal
+rm -f TimeSysCall TimeFork TimeSignal 
 $ make TimeSysCall                      # Compile using make
 gcc -Wall TimeSysCall.c -o TimeSysCall
 $ ./TimeSysCall                         # Run the program
@@ -96,6 +96,53 @@ Link:  \href{https://www.geeksforgeeks.org/getppid-getpid-linux}{https://www.gee
 \item \textbf{How to use time functions using gettimeofday() (\textit{Look at method \#3})}\\
 Link: \href{https://www.techiedelight.com/find-execution-time-c-program/}{https://www.techiedelight.com/find-execution-time-c-program/}
 \end{itemize}
+
+
+
+
+\section{System Calls Continued}
+The operating system has many system calls, each used to help user applications request services or resources from the operating system.  Not all system calls would be as simple as \textit{getpid()}. In order to get an understanding of the overhead of more complex system calls, we want to time a more involved system call such as \textit{fork()}. The \textit{fork()} system call is responsible for duplicating the calling process and the kernel needs to handle this as the operating system is responsible for keeping track of every process running on the system. \\\\
+
+ 
+\subsection*{Implementation}
+In order to get a sense of the time it takes to fork a process, we want capture the time it takes to fork a process multiple times and calculate the average time it takes per fork. In order to fork the process, the program should call fork(). The original process (parent process) should then call \textit{wait()} or \textit{waitpid()} to wait for the the forked process (child process) to successfully be created, run, and terminate. Instead of running code, the forked process (child process) should immediately terminate by either calling exit() or returning from the main function. When the child process terminates, the parent process should continue to run and then fork the process again. 
+
+In order to get an accurate reading, you should \textit{fork()} and \textit{wait()/waitpid()} many times (e.g. 5,000 times) and then calculate the average time it took for each fork. Like the previous section, you should use the function \textit{gettimeofday()} to get the time before you start forking the process and the time after you stop forking the process so you can calculate the total time it took to fork the process a certain amount of times.  
+
+Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeFork.c}, Your job to is to complete the implementation in \textit{TimeFork.c}, forking the process and waiting for the child process to terminate 5,000 times and timing it in order to calculate the following statistics: (1) how many times the process was forked, (2) the total time it took to execute all the forks, and (3) the average time it took per fork. \textbf{The output of your program should be formatted exactly the same as in the example run} shown later on in this section \textbf{and show the time as microseconds}.
+
+\subsection*{Example Run}
+\begin{commandline}
+	\begin{verbatim}
+$ make clean                            # Remove any old executable made
+rm -f TimeSysCall TimeFork TimeSignal 
+$ make TimeFork                     # Compile using make
+gcc -Wall TimeFork.c -o TimeFork
+$ ./TimeFork                         # Run the program
+Forks Performed: XXXX
+Total Elapsed Time: XXXX microseconds
+Average Time Per Fork: XXXXX microseconds
+	\end{verbatim}
+\end{commandline}
+
+
+\subsection*{Helpful References}
+The following are helpful references to help get you started
+\begin{itemize}
+\item \textbf{The fork() System Call}\\
+Link: \href{https://www.csl.mtu.edu/cs4411.ck/www/NOTES/process/fork/create.html}{https://www.csl.mtu.edu/cs4411.ck/www/NOTES/process/fork/create.html}
+\item \textbf{Fork() in C}\\
+Link: \href{https://www.geeksforgeeks.org/fork-system-call/}{https://www.geeksforgeeks.org/fork-system-call/}
+\item \textbf{Wait() in C}\\
+Link: \href{https://www.geeksforgeeks.org/wait-system-call-c/}{https://www.geeksforgeeks.org/wait-system-call-c/}\
+\item \textbf{Waitpid() in C}\\
+Link: \href{https://www.tutorialspoint.com/unix_system_calls/waitpid.htm}{https://www.tutorialspoint.com/unix\_system\_calls/waitpid.htm}
+\end{itemize}
+
+
+
+
+
 
 
 \section{Signals}
@@ -131,11 +178,15 @@ void handle_sigfpe(int signum){
  }
 \end{verbatim}
 
-\begin{info}[Note on Signal Handling:]
-Please note that if a signal handler function is allowed to return, the instruction that caused the signal will execute again, therefore causing the exception to occur again, ad infinitum. Your signal handler will need to detect when it has been invoked 100,000 times, then report the results and terminate the program. You can use a static variable for this purpose.
+\begin{info}[Registering Signal Handlers:]
+As you go through the references, you will realize that there are two functions you can use to register a signal handler: (1) \textit{signal()} and (2) \textit{sigaction()}. Look at how both works. Using either one is acceptable. 
 \end{info}
 
-Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{gettimeofday()} to time the execution like in the previous part of this assignment. The output of your program should be formatted exactly the same as in the example run shown later in this section \textbf{and show the time as microseconds}\\
+\begin{info}[Note on Signal Handling:]
+Please note that if a signal handler function is allowed to return, the instruction that caused the signal will execute again, therefore causing the exception to occur again, ad infinitum. Your signal handler will need to detect when it has been invoked 100,000 times, then report the results and terminate the program. You can use a static/global variable for this purpose.
+\end{info}
+
+Supplied should be a \textit{Makefile} and bare C program template called \textit{TimeSignal.c}. Within \textit{Timesignal.c} there will be a \textit{handle\_sigfpe()} function ready to be implemented. Your job to is to complete the implementation, incurring a SIGFPE and handling the signal with the signal handler 100,000 times and time it to calculate the following statistics: (1) how many exceptions occurred, (2) total time elapsed, and (3) the average time per exception. You should use the function \textit{gettimeofday()} to time the execution like in the previous part of this assignment. \textbf{The output of your program should be formatted exactly the same as in the example run} shown later in this section \textbf{and show the time as microseconds}\\
 
 \begin{info}[Note: Measurement Precision.]
 Like with measuring system call times in the previous section, you should use floating point arithmetic to show sub-microsecond precision. The average time to handle a signal should be a few microseconds.
@@ -145,7 +196,7 @@ Like with measuring system call times in the previous section, you should use fl
 \begin{commandline}
 \begin{verbatim}
 $ make clean                           # Remove any old executable made
-rm -f TimeSysCall TimeSignal
+rm -f TimeSysCall TimeFork TimeSignal 
 $ make TimeSignal                      # Compile using make
 gcc -Wall TimeSignal.c -o TimeSignal
 $ ./TimeSignal                         # Run the program
@@ -161,8 +212,8 @@ The following are helpful references to help get you started in understanding Si
 \begin{itemize}
 \item \textbf{What is a Signal} \\
 Link:  \href{https://en.wikipedia.org/wiki/Signal_(IPC)}{https://en.wikipedia.org/wiki/Signal\_(IPC)}
-\item \textbf{What are Signals and How to Handle Them}\\
-Link:  \href{https://www.geeksforgeeks.org/signals-c-language}{https://www.geeksforgeeks.org/signals-c-language}
+\item \textbf{Signal Handling in Linux}\\
+Link:  \href{http://www.alexonlinux.com/signal-handling-in-linux#sigaction()}{http://www.alexonlinux.com/signal-handling-in-linux\#sigaction()}
 \item \textbf{Signal Handling in Depth}\\
 Link:  \href{https://www.gnu.org/software/libc/manual/html_node/Signal-Handling.html}{https://www.gnu.org/software/libc/manual/html\_node/Signal-Handling.html}
 \item \textbf{What happens when you dereference a null pointer? (How exceptions are handled)}\\
@@ -172,6 +223,8 @@ Link:  \href{https://stackoverflow.com/questions/12645647/what-happens-in-os-whe
 \section*{Important Things to Note:}
 When completing your assignment make sure to keep the following things in mind:
 \begin{itemize}
+\item \textbf{Including other headers}\\
+You may need to include other headers to use certain functions like \textit{gettimeofday()}, \textit{wait()}, etc. This is okay, make sure you include these headers so that you can use these functions properly.
 \item \textbf{Make sure your programs can compile and run on the iLab machines}\\
 We will be grading your assignments on the iLab machines, so if your programs are unable to compile or run on the iLab machines, points will be deducted. No exceptions. 
 \item \textbf{Make sure you can compile you programs with \textit{make}}\\
@@ -182,6 +235,7 @@ We will be using the Makefile to compile your programs. If for some reason we ca
 To submit your assignment, simply submit the following files as is, directly to sakai as is. (\textbf{Do not compress the files}):
 \begin{enumerate}
 \item TimeSysCall.c
+\item TimeFork.c
 \item TimeSignal.c
 \item Makefile (even if you didn't modify it)
 \end{enumerate}

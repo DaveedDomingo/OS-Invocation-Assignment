@@ -1,14 +1,16 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -g -Wall
 
-all: TimeSysCall TimeSignal
+all: TimeSysCall TimeFork TimeSignal
 
 TimeSysCall: TimeSysCall.c
 	$(CC) $(CFLAGS) TimeSysCall.c -o TimeSysCall
+
+TimeFork: TimeFork.c
+	$(CC) $(CFLAGS) TimeFork.c -o TimeFork
 
 TimeSignal: TimeSignal.c
 	$(CC) $(CFLAGS) TimeSignal.c -o TimeSignal
 
 clean:
-	rm -f TimeSysCall TimeSignal
-
+	rm -f TimeSysCall TimeFork TimeSignal
